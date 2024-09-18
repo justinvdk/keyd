@@ -178,19 +178,7 @@ static void write_key_event(const struct vkbd *vkbd, uint8_t code, int state)
 	 * keyboard as a mouse.
 	 */
 	if (is_btn) {
-		fd = vkbd->pfd;
-
-		/*
-		 * Give key events preceding a mouse click
-		 * a chance to propagate to avoid event
-		 * order transposition. A bit kludegy,
-		 * but better than waiting for all events
-		 * to propagate and then checking them
-		 * on re-entry.
-		 *
-		 * TODO: fixme (maybe)
-		 */
-		usleep(1000);
+		fprintf(stderr, "uinput: mouse support is not implemented\n");
 	}
 
 	ev.value = state;
@@ -216,104 +204,23 @@ struct vkbd *vkbd_init(const char *name)
 
 	struct vkbd *vkbd = calloc(1, sizeof vkbd);
 	vkbd->fd = create_virtual_keyboard(name);
-	vkbd->pfd = create_virtual_pointer("keyd virtual pointer");
 
 	return vkbd;
 }
 
 void vkbd_mouse_move(const struct vkbd *vkbd, int x, int y)
 {
-	struct input_event ev;
-
-	if (x) {
-		ev.type = EV_REL;
-		ev.code = REL_X;
-		ev.value = x;
-
-		ev.time.tv_sec = 0;
-		ev.time.tv_usec = 0;
-
-		xwrite(vkbd->pfd, &ev, sizeof(ev));
-	}
-
-	if (y) {
-		ev.type = EV_REL;
-		ev.code = REL_Y;
-		ev.value = y;
-
-		ev.time.tv_sec = 0;
-		ev.time.tv_usec = 0;
-
-		xwrite(vkbd->pfd, &ev, sizeof(ev));
-	}
-
-	ev.type = EV_SYN;
-	ev.code = 0;
-	ev.value = 0;
-
-	xwrite(vkbd->pfd, &ev, sizeof(ev));
-}
-
-void vkbd_mouse_scroll(const struct vkbd *vkbd, int x, int y)
-{
-	struct input_event ev;
-
-	ev.type = EV_REL;
-	ev.code = REL_WHEEL;
-	ev.value = y;
-
-	ev.time.tv_sec = 0;
-	ev.time.tv_usec = 0;
-
-	xwrite(vkbd->pfd, &ev, sizeof(ev));
-
-	ev.type = EV_REL;
-	ev.code = REL_HWHEEL;
-	ev.value = x;
-
-	ev.time.tv_sec = 0;
-	ev.time.tv_usec = 0;
-
-	xwrite(vkbd->pfd, &ev, sizeof(ev));
-
-	ev.type = EV_SYN;
-	ev.code = 0;
-	ev.value = 0;
-
-	xwrite(vkbd->pfd, &ev, sizeof(ev));
+	fprintf(stderr, "uinput: mouse support is not implemented\n");
 }
 
 void vkbd_mouse_move_abs(const struct vkbd *vkbd, int x, int y)
 {
-	struct input_event ev;
+	fprintf(stderr, "uinput: mouse support is not implemented\n");
+}
 
-	if (x) {
-		ev.type = EV_ABS;
-		ev.code = ABS_X;
-		ev.value = x;
-
-		ev.time.tv_sec = 0;
-		ev.time.tv_usec = 0;
-
-		xwrite(vkbd->pfd, &ev, sizeof(ev));
-	}
-
-	if (y) {
-		ev.type = EV_ABS;
-		ev.code = ABS_Y;
-		ev.value = y;
-
-		ev.time.tv_sec = 0;
-		ev.time.tv_usec = 0;
-
-		xwrite(vkbd->pfd, &ev, sizeof(ev));
-	}
-
-	ev.type = EV_SYN;
-	ev.code = 0;
-	ev.value = 0;
-
-	xwrite(vkbd->pfd, &ev, sizeof(ev));
+void vkbd_mouse_scroll(const struct vkbd *vkbd, int x, int y)
+{
+	fprintf(stderr, "uinput: mouse support is not implemented\n");
 }
 
 void vkbd_send_key(const struct vkbd *vkbd, uint8_t code, int state)
